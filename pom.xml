@@ -1,0 +1,114 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>org.openstreetmap.josm.plugins</groupId>
+  <artifactId>josmmcp</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>josmmcp</name>
+  <url>http://maven.apache.org</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <maven.compiler.source>17</maven.compiler.source>
+    <maven.compiler.target>17</maven.compiler.target>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.openstreetmap.josm</groupId>
+      <artifactId>josm-latest</artifactId>
+      <version>latest</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/josm-latest.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>io.modelcontextprotocol.sdk</groupId>
+      <artifactId>mcp</artifactId>
+      <version>0.17.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-server</artifactId>
+      <version>11.0.20</version>
+    </dependency>
+    <dependency>
+      <groupId>org.eclipse.jetty</groupId>
+      <artifactId>jetty-servlet</artifactId>
+      <version>11.0.20</version>
+    </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>2.0.9</version>
+    </dependency>
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>3.8.1</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <version>3.6.0</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>org.openstreetmap.josm.plugins.josmdestinationviewer.JosmDestinationViewer</mainClass>
+            </manifest>
+            <manifestEntries>
+              <!-- The lowest JOSM version required by this plugin. -->
+              <Plugin-Mainversion>18700</Plugin-Mainversion>
+              <!-- The plugin version -->
+              <Plugin-Version>0.0.1-SNAPSHOT</Plugin-Version>
+              <!-- Points to the main class of the plugin -->
+              <Plugin-Class>org.openstreetmap.josm.plugins.josmmcp.JosmMCPPlugin</Plugin-Class>
+              <!-- Gives the description of the plugin visible in the preferences page -->
+              <Plugin-Description>This plugin allows advanced interactions with LLMs.</Plugin-Description>
+              <!-- The name and or email address of the author of this plugin -->
+              <Author>fansanelli</Author>
+              <!-- Should be set to true if the plugin can be installed without restart -->
+              <Plugin-Canloadatruntime>true</Plugin-Canloadatruntime>
+            </manifestEntries>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <resources>
+      <resource>
+        <directory>${project.basedir}</directory>
+        <includes>
+          <include>LICENSE</include>
+        </includes>
+        <filtering>false</filtering>
+        <targetPath>license/josmmcp</targetPath>
+      </resource>
+    </resources>
+  </build>
+</project>
