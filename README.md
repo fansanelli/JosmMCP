@@ -9,6 +9,8 @@ After installing and loading the plugin in JOSM, it automatically starts an MCP 
 Currently available tools:
 - `get_josm_state`: Retrieves the current state of JOSM, including version, downloaded layers, and data information.
 - `get_selected_elements`: Retrieves information about the currently selected OSM elements in JOSM, including their display names and tags.
+- `search_elements`: Searches for OSM elements in the downloaded data using JOSM query syntax (e.g., 'highway=residential', 'amenity=restaurant').
+- `modify_elements`: Modifies OSM elements: select elements, add/remove/set tags.
 
 ## Building
 
