@@ -2,6 +2,10 @@
 
 JosmMCP is a plugin for [JOSM](https://josm.openstreetmap.de/), the Java-based editor for OpenStreetMap. It integrates JOSM with the Model Context Protocol (MCP), providing an HTTP server that allows external MCP clients to access JOSM features.
 
+## ⚠️ Warning
+
+**This plugin is currently in an experimental phase and is not suitable for production use. It serves as a proof-of-concept and does not adhere to zero trust principles. Users should be aware that it may lead to unexpected behaviors or errors.**
+
 ## Usage
 
 After installing and loading the plugin in JOSM, it automatically starts an MCP server on port 3000. External MCP clients (such as AI assistants or other applications) can connect to `http://localhost:3000/mcp` and use the available tools to interact with JOSM.
