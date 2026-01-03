@@ -6,7 +6,8 @@ JosmMCP is a plugin for [JOSM](https://josm.openstreetmap.de/), the Java-based e
 
 After installing and loading the plugin in JOSM, it automatically starts an MCP server on port 3000. External MCP clients (such as AI assistants or other applications) can connect to `http://localhost:3000/mcp` and use the available tools to interact with JOSM.
 
-Currently available tool:
+Currently available tools:
+- `get_josm_state`: Retrieves the current state of JOSM, including version, downloaded layers, and data information.
 - `get_selected_elements`: Retrieves information about the currently selected OSM elements in JOSM, including their display names and tags.
 
 ## Building
