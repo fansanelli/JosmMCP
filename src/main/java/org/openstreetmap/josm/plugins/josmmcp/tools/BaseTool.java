@@ -36,10 +36,16 @@ public abstract class BaseTool implements org.openstreetmap.josm.plugins.josmmcp
 		McpStatelessServerFeatures.AsyncToolSpecification spec = new McpStatelessServerFeatures.AsyncToolSpecification(
 				tool, (exchange, params) -> {
 					Logging.info(String.format("Tool '%s' called with params: %s", this.getName(), params.arguments()));
-					String result = this.handle(exchange, params);
-					Logging.info(String.format("Returning '%s' result: %s", this.getName(), result));
-					return Mono.just(CallToolResult.builder().content(Arrays.asList(new TextContent(result)))
-							.isError(false).build());
+					try {
+						String result = this.handle(exchange, params);
+						Logging.info(String.format("Returning '%s' result: %s", this.getName(), result));
+						return Mono.just(CallToolResult.builder().content(Arrays.asList(new TextContent(result)))
+								.isError(false).build());
+					} catch (Exception e) {
+						Logging.error(String.format("Exception in '%s' - message: %s", this.getName(), e.getMessage()));
+						return Mono.just(CallToolResult.builder().content(Arrays.asList(new TextContent(e.getMessage())))
+								.isError(true).build());
+					}
 				});
 		return spec;
 	}

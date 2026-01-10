@@ -28,5 +28,5 @@ public interface Tool {
 
 	public McpSchema.JsonSchema getInputSchema();
 
-	public String handle(McpTransportContext exchange, CallToolRequest params);
+	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception;
 }

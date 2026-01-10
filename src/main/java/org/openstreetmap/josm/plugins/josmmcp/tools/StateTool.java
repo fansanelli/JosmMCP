@@ -50,7 +50,7 @@ public class StateTool extends BaseTool {
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) {
+	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
 		StringBuilder sb = new StringBuilder();
 
 		// Versione JOSM

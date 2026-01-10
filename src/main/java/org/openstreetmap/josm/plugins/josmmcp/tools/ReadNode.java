@@ -17,10 +17,13 @@
  */
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
-import java.util.Collection;
+import java.util.Arrays;
+import java.util.Map;
 
-import org.openstreetmap.josm.data.osm.DefaultNameFormatter;
-import org.openstreetmap.josm.data.osm.OsmPrimitive;
+import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.Node;
+import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
+import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
 import org.openstreetmap.josm.gui.MainApplication;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -28,33 +31,46 @@ import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class SelectedTool extends BaseTool {
+public class ReadNode extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "get_selected_elements";
+		return "read_node";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Get the currently selected OSM elements in JOSM";
+		return "Read a node by Id from current Dataset and returns coordinates and tags";
 	}
 
 	@Override
 	public JsonSchema getInputSchema() {
-		McpSchema.JsonSchema emptySchema = new McpSchema.JsonSchema("object", new java.util.HashMap<>(), null, null,
-				null, null);
-		return emptySchema;
+		Map<String, Object> readProps = new java.util.HashMap<>();
+		Map<String, Object> idProp = new java.util.HashMap<>();
+		idProp.put("type", "number");
+		readProps.put("id", idProp);
+		McpSchema.JsonSchema readSchema = new McpSchema.JsonSchema("object", readProps, Arrays.asList("id"), null, null,
+				null);
+		return readSchema;
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) {
-		Collection<OsmPrimitive> selection = MainApplication.getLayerManager().getEditDataSet().getAllSelected();
-		StringBuilder sb = new StringBuilder("Elementi selezionati: " + selection.size());
-		for (OsmPrimitive prim : selection) {
-			sb.append("\n- ").append(prim.getDisplayName(new DefaultNameFormatter())).append(" (tags: ")
-					.append(prim.getKeys()).append(")");
+	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
+		Map<String, Object> args = params.arguments();
+
+		DataSet ds = MainApplication.getLayerManager().getEditDataSet();
+		if (ds == null) {
+			throw new Exception("no active dataset found");
 		}
-		return sb.toString();
+
+		int id = (int) args.get("id");
+		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+
+		String result = "";
+
+		result += nd.getCoor().toString();
+		result += nd.getKeys().toString();
+
+		return result;
 	}
 }

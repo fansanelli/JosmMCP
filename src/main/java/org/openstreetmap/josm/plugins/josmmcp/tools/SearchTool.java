@@ -17,6 +17,7 @@
  */
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,6 @@ import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.DefaultNameFormatter;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.search.SearchCompiler;
-import org.openstreetmap.josm.data.osm.search.SearchParseError;
 import org.openstreetmap.josm.gui.MainApplication;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -54,64 +54,53 @@ public class SearchTool extends BaseTool {
 		Map<String, Object> maxResultsProp = new java.util.HashMap<>();
 		maxResultsProp.put("type", "integer");
 		searchProps.put("max_results", maxResultsProp);
-		McpSchema.JsonSchema searchSchema = new McpSchema.JsonSchema("object", searchProps, null, null, null, null);
+		McpSchema.JsonSchema searchSchema = new McpSchema.JsonSchema("object", searchProps, Arrays.asList("query"),
+				null, null, null);
 		return searchSchema;
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) {
+	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
 		Map<String, Object> args = params.arguments();
-		if (args == null) {
-			return "No arguments provided";
+
+		String query = (String) args.get("query");
+		Integer maxResults = (Integer) args.get("max_results");
+		if (maxResults == null) {
+			maxResults = 50;
 		}
-		try {
-			String query = (String) args.get("query");
-			if (query == null || query.trim().isEmpty()) {
-				query = "highway=*"; // Default query to search for highways
-			}
 
-			Integer maxResults = (Integer) args.get("max_results");
-			if (maxResults == null) {
-				maxResults = 50;
-			}
-
-			DataSet ds = MainApplication.getLayerManager().getEditDataSet();
-			if (ds == null) {
-				return "Errore: nessun dataset attivo";
-			}
-
-			SearchCompiler.Match matcher = SearchCompiler.compile(query);
-			Collection<OsmPrimitive> allPrimitives = ds.allPrimitives();
-			List<OsmPrimitive> results = new java.util.ArrayList<>();
-
-			for (OsmPrimitive prim : allPrimitives) {
-				if (matcher.match(prim)) {
-					results.add(prim);
-				}
-			}
-
-			StringBuilder sb = new StringBuilder("Risultati ricerca per '").append(query).append("': ")
-					.append(results.size());
-			if (results.size() > maxResults) {
-				sb.append(" (mostrati primi ").append(maxResults).append(")");
-			}
-			sb.append("\n");
-
-			int count = 0;
-			for (OsmPrimitive prim : results) {
-				if (count >= maxResults)
-					break;
-				sb.append("- ").append(prim.getDisplayName(new DefaultNameFormatter())).append(" (ID: ")
-						.append(prim.getId()).append(", tipo: ").append(prim.getType()).append(", tags: ")
-						.append(prim.getKeys()).append(")\n");
-				count++;
-			}
-
-			return sb.toString();
-		} catch (SearchParseError e) {
-			return "Errore nella query di ricerca: " + e.getMessage();
-		} catch (Exception e) {
-			return "Errore durante la ricerca: " + e.getMessage();
+		DataSet ds = MainApplication.getLayerManager().getEditDataSet();
+		if (ds == null) {
+			throw new Exception("no active dataset found");
 		}
+
+		SearchCompiler.Match matcher = SearchCompiler.compile(query);
+		Collection<OsmPrimitive> allPrimitives = ds.allPrimitives();
+		List<OsmPrimitive> results = new java.util.ArrayList<>();
+
+		for (OsmPrimitive prim : allPrimitives) {
+			if (matcher.match(prim)) {
+				results.add(prim);
+			}
+		}
+
+		StringBuilder sb = new StringBuilder("Risultati ricerca per '").append(query).append("': ")
+				.append(results.size());
+		if (results.size() > maxResults) {
+			sb.append(" (mostrati primi ").append(maxResults).append(")");
+		}
+		sb.append("\n");
+
+		int count = 0;
+		for (OsmPrimitive prim : results) {
+			if (count >= maxResults)
+				break;
+			sb.append("- ").append(prim.getDisplayName(new DefaultNameFormatter())).append(" (ID: ")
+					.append(prim.getId()).append(", tipo: ").append(prim.getType()).append(", tags: ")
+					.append(prim.getKeys()).append(")\n");
+			count++;
+		}
+
+		return sb.toString();
 	}
 }

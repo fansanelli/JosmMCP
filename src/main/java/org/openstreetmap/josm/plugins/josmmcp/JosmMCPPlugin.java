@@ -25,10 +25,13 @@ import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.openstreetmap.josm.plugins.Plugin;
 import org.openstreetmap.josm.plugins.PluginInformation;
-import org.openstreetmap.josm.plugins.josmmcp.tools.ModifyTool;
+import org.openstreetmap.josm.plugins.josmmcp.tools.CreateNode;
+import org.openstreetmap.josm.plugins.josmmcp.tools.DeleteNode;
+import org.openstreetmap.josm.plugins.josmmcp.tools.ModifyTags;
+import org.openstreetmap.josm.plugins.josmmcp.tools.ReadNode;
 import org.openstreetmap.josm.plugins.josmmcp.tools.SearchTool;
-import org.openstreetmap.josm.plugins.josmmcp.tools.SelectedTool;
 import org.openstreetmap.josm.plugins.josmmcp.tools.StateTool;
+import org.openstreetmap.josm.plugins.josmmcp.tools.UpdateNode;
 import org.openstreetmap.josm.tools.Logging;
 
 import io.modelcontextprotocol.server.McpServer;
@@ -48,12 +51,17 @@ public class JosmMCPPlugin extends Plugin {
 			ServletContextHandler context = new ServletContextHandler();
 			context.setContextPath("/");
 			jettyServer.setHandler(context);
-			
+
 			List<McpStatelessServerFeatures.AsyncToolSpecification> toolSpecs = new ArrayList<McpStatelessServerFeatures.AsyncToolSpecification>();
 			toolSpecs.add(new SearchTool().getSpec());
-			toolSpecs.add(new ModifyTool().getSpec());
-			toolSpecs.add(new SelectedTool().getSpec());
+			toolSpecs.add(new ModifyTags().getSpec());
 			toolSpecs.add(new StateTool().getSpec());
+
+			// CRUD Operations on Nodes
+			toolSpecs.add(new CreateNode().getSpec());
+			toolSpecs.add(new ReadNode().getSpec());
+			toolSpecs.add(new UpdateNode().getSpec());
+			toolSpecs.add(new DeleteNode().getSpec());
 
 			HttpServletStatelessServerTransport servlet = HttpServletStatelessServerTransport.builder().build();
 			McpStatelessAsyncServer server = McpServer.async(servlet).serverInfo("JOSM MCP Server", "1.0.0")
