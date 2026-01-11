@@ -20,12 +20,10 @@ package org.openstreetmap.josm.plugins.josmmcp.tools;
 import java.util.Arrays;
 import java.util.Map;
 
-import org.openstreetmap.josm.command.DeleteCommand;
-import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
+import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -33,27 +31,27 @@ import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class DeleteNode extends BaseTool {
+public class ReadWay extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "delete_node";
+		return "read_way";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Delete a node by Id in current Dataset";
+		return "Read a way Id from current Dataset and returns its nodes and tags";
 	}
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> deleteProps = new java.util.HashMap<>();
+		Map<String, Object> readProps = new java.util.HashMap<>();
 		Map<String, Object> idProp = new java.util.HashMap<>();
 		idProp.put("type", "number");
-		deleteProps.put("id", idProp);
-		McpSchema.JsonSchema deleteSchema = new McpSchema.JsonSchema("object", deleteProps, Arrays.asList("id"), null, null,
+		readProps.put("id", idProp);
+		McpSchema.JsonSchema readSchema = new McpSchema.JsonSchema("object", readProps, Arrays.asList("id"), null, null,
 				null);
-		return deleteSchema;
+		return readSchema;
 	}
 
 	@Override
@@ -66,10 +64,13 @@ public class DeleteNode extends BaseTool {
 		}
 
 		long id = Long.parseLong(args.get("id").toString());
-		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+		Way w = (Way) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.WAY));
 
-		DeleteCommand c = new DeleteCommand(ds, nd);
-		UndoRedoHandler.getInstance().add(c);
-		return "";
+		String result = "";
+
+		result += "node_ids" + w.getNodes();
+		result += w.getKeys().toString();
+
+		return result;
 	}
 }

@@ -18,14 +18,17 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.openstreetmap.josm.command.DeleteCommand;
+import org.openstreetmap.josm.command.AddCommand;
 import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
+import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -33,27 +36,28 @@ import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class DeleteNode extends BaseTool {
+public class CreateWay extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "delete_node";
+		return "create_way";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Delete a node by Id in current Dataset";
+		return "Create a new way in current Dataset and returns the Id";
 	}
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> deleteProps = new java.util.HashMap<>();
-		Map<String, Object> idProp = new java.util.HashMap<>();
-		idProp.put("type", "number");
-		deleteProps.put("id", idProp);
-		McpSchema.JsonSchema deleteSchema = new McpSchema.JsonSchema("object", deleteProps, Arrays.asList("id"), null, null,
-				null);
-		return deleteSchema;
+		Map<String, Object> createProps = new java.util.HashMap<>();
+		Map<String, Object> nodesProp = new java.util.HashMap<>();
+		nodesProp.put("type", "array");
+		nodesProp.put("items", Map.of("type", "number"));
+		createProps.put("node_ids", nodesProp);
+		McpSchema.JsonSchema createSchema = new McpSchema.JsonSchema("object", createProps, Arrays.asList("node_ids"),
+				null, null, null);
+		return createSchema;
 	}
 
 	@Override
@@ -65,11 +69,18 @@ public class DeleteNode extends BaseTool {
 			throw new Exception("no active dataset found");
 		}
 
-		long id = Long.parseLong(args.get("id").toString());
-		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+		@SuppressWarnings("unchecked")
+		List<Long> nodes = ((List<Object>) args.get("node_ids")).stream().map(obj -> Long.parseLong(obj.toString()))
+				.collect(Collectors.toList());
+		Way w = new Way();
+		for (long id : nodes) {
+			Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+			w.addNode(nd);
+		}
 
-		DeleteCommand c = new DeleteCommand(ds, nd);
+		AddCommand c = new AddCommand(ds, w);
+
 		UndoRedoHandler.getInstance().add(c);
-		return "";
+		return Long.toString(w.getUniqueId());
 	}
 }

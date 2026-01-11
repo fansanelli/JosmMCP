@@ -82,7 +82,7 @@ public class ModifyTags extends BaseTool {
 		}
 
 		String type = (String) args.get("element_type");
-		int id = (int) args.get("element_id");
+		long id = Long.parseLong(args.get("element_id").toString());
 		OsmPrimitive el = ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.from(type)));
 
 		Collection<Command> cmds = new LinkedList<>();

@@ -23,9 +23,9 @@ import java.util.Map;
 import org.openstreetmap.josm.command.DeleteCommand;
 import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
+import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
 
 import io.modelcontextprotocol.common.McpTransportContext;
@@ -33,16 +33,16 @@ import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class DeleteNode extends BaseTool {
+public class DeleteWay extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "delete_node";
+		return "delete_way";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Delete a node by Id in current Dataset";
+		return "Delete a way by Id in current Dataset";
 	}
 
 	@Override
@@ -51,8 +51,8 @@ public class DeleteNode extends BaseTool {
 		Map<String, Object> idProp = new java.util.HashMap<>();
 		idProp.put("type", "number");
 		deleteProps.put("id", idProp);
-		McpSchema.JsonSchema deleteSchema = new McpSchema.JsonSchema("object", deleteProps, Arrays.asList("id"), null, null,
-				null);
+		McpSchema.JsonSchema deleteSchema = new McpSchema.JsonSchema("object", deleteProps, Arrays.asList("id"), null,
+				null, null);
 		return deleteSchema;
 	}
 
@@ -66,9 +66,9 @@ public class DeleteNode extends BaseTool {
 		}
 
 		long id = Long.parseLong(args.get("id").toString());
-		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+		Way w = (Way) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.WAY));
 
-		DeleteCommand c = new DeleteCommand(ds, nd);
+		DeleteCommand c = new DeleteCommand(ds, w);
 		UndoRedoHandler.getInstance().add(c);
 		return "";
 	}

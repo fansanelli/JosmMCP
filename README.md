@@ -14,10 +14,13 @@ Currently available tools:
 - `get_josm_state`: Retrieves the current state of JOSM, including version, downloaded layers, and data information.
 - `search_elements`: Searches for OSM elements in the downloaded data using JOSM query syntax (e.g., 'highway=residential', 'amenity=restaurant').
 - `modify_tags`: Modifies OSM elements: add/remove/set tags.
-- `create_node`: Creates a new Node
+- `create_node`: Creates a new node
 - `read_node`: Returns coords and tags of a node
 - `update_node`: Moves a node
 - `delete_node`: Deletes a node
+- `create_way`: Creates a new way
+- `read_way`: Returns nodes and tags of a way
+- `delete_way`: Deletes a way
 
 ## Building
 

@@ -63,7 +63,7 @@ public class ReadNode extends BaseTool {
 			throw new Exception("no active dataset found");
 		}
 
-		int id = (int) args.get("id");
+		long id = Long.parseLong(args.get("id").toString());
 		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
 
 		String result = "";
