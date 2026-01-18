@@ -17,28 +17,28 @@
  */
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
-import org.openstreetmap.josm.data.Bounds;
-import org.openstreetmap.josm.data.Version;
 import org.openstreetmap.josm.data.osm.DataSet;
+import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.gui.layer.Layer;
+import org.openstreetmap.josm.plugins.josmmcp.utils.JosmUtils;
 
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class StateTool extends BaseTool {
+public class GetUserSelection extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "get_josm_state";
+		return "get_user_selection";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Ottieni lo stato corrente di JOSM: versione, layer scaricati e informazioni sui dati";
+		return "Returns the elements currently selected by the user. "
+				+ "The selection is informational context only not an operation target";
 	}
 
 	@Override
@@ -50,39 +50,16 @@ public class StateTool extends BaseTool {
 
 	@Override
 	public String handle(Map<String, Object> args) throws Exception {
-		StringBuilder sb = new StringBuilder();
-
-		// Versione JOSM
-		String version = Version.getInstance().getVersionString();
-		sb.append("Versione JOSM: ").append(version).append("\n");
-
-		// Layer scaricati
-		List<Layer> layers = MainApplication.getLayerManager().getLayers();
-		sb.append("Layer scaricati: ").append(layers.size()).append("\n");
-		for (Layer layer : layers) {
-			sb.append("- ").append(layer.getName()).append(" (").append(layer.getClass().getSimpleName()).append(")\n");
-		}
-
-		// Informazioni sui dati
 		DataSet ds = MainApplication.getLayerManager().getEditDataSet();
-		if (ds != null) {
-			sb.append("Informazioni sui dati:\n");
-			sb.append("- Nodi: ").append(ds.getNodes().size()).append("\n");
-			sb.append("- Ways: ").append(ds.getWays().size()).append("\n");
-			sb.append("- Relazioni: ").append(ds.getRelations().size()).append("\n");
-			List<Bounds> boundsList = ds.getDataSourceBounds();
-			if (!boundsList.isEmpty()) {
-				sb.append("- Bounds: ");
-				for (Bounds b : boundsList) {
-					sb.append(b.toString()).append("; ");
-				}
-				sb.append("\n");
-			}
-		} else {
-			sb.append("Nessun dataset di modifica attivo.\n");
+		if (ds == null) {
+			throw new Exception("no active dataset found");
 		}
 
+		Collection<OsmPrimitive> selection = ds.getAllSelected();
+		StringBuilder sb = new StringBuilder("Selected elements: " + selection.size());
+		for (OsmPrimitive prim : selection) {
+			sb.append("\n-----------------\n").append(JosmUtils.printElement(prim));
+		}
 		return sb.toString();
 	}
-
 }

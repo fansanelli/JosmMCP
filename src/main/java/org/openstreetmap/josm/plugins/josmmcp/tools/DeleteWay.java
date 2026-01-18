@@ -28,9 +28,7 @@ import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
 import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
 
-import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
 public class DeleteWay extends BaseTool {
@@ -57,9 +55,7 @@ public class DeleteWay extends BaseTool {
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
-		Map<String, Object> args = params.arguments();
-
+	public String handle(Map<String, Object> args) throws Exception {
 		DataSet ds = MainApplication.getLayerManager().getEditDataSet();
 		if (ds == null) {
 			throw new Exception("no active dataset found");

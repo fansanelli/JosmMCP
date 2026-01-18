@@ -20,37 +20,38 @@ package org.openstreetmap.josm.plugins.josmmcp.tools;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.openstreetmap.josm.command.DeleteCommand;
+import org.openstreetmap.josm.data.UndoRedoHandler;
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
+import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
-import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
-import org.openstreetmap.josm.plugins.josmmcp.utils.JosmUtils;
 
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class ReadWay extends BaseTool {
+public class DeleteRelation extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "read_way";
+		return "delete_relation";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Read a way Id from current Dataset and returns its nodes and tags";
+		return "Delete a relation by Id in current Dataset";
 	}
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> readProps = new java.util.HashMap<>();
+		Map<String, Object> deleteProps = new java.util.HashMap<>();
 		Map<String, Object> idProp = new java.util.HashMap<>();
 		idProp.put("type", "number");
-		readProps.put("id", idProp);
-		McpSchema.JsonSchema readSchema = new McpSchema.JsonSchema("object", readProps, Arrays.asList("id"), null, null,
-				null);
-		return readSchema;
+		deleteProps.put("id", idProp);
+		McpSchema.JsonSchema deleteSchema = new McpSchema.JsonSchema("object", deleteProps, Arrays.asList("id"), null,
+				null, null);
+		return deleteSchema;
 	}
 
 	@Override
@@ -61,8 +62,10 @@ public class ReadWay extends BaseTool {
 		}
 
 		long id = Long.parseLong(args.get("id").toString());
-		Way w = (Way) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.WAY));
+		Relation w = (Relation) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.RELATION));
 
-		return JosmUtils.printElement(w);
+		DeleteCommand c = new DeleteCommand(ds, w);
+		UndoRedoHandler.getInstance().add(c);
+		return "";
 	}
 }

@@ -22,24 +22,24 @@ import java.util.Map;
 
 import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
+import org.openstreetmap.josm.data.osm.Relation;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
-import org.openstreetmap.josm.data.osm.Way;
 import org.openstreetmap.josm.gui.MainApplication;
 import org.openstreetmap.josm.plugins.josmmcp.utils.JosmUtils;
 
 import io.modelcontextprotocol.spec.McpSchema;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
-public class ReadWay extends BaseTool {
+public class ReadRelation extends BaseTool {
 
 	@Override
 	public String getName() {
-		return "read_way";
+		return "read_relation";
 	}
 
 	@Override
 	public String getDescription() {
-		return "Read a way Id from current Dataset and returns its nodes and tags";
+		return "Read a relation Id from current Dataset and returns its members and tags";
 	}
 
 	@Override
@@ -61,8 +61,8 @@ public class ReadWay extends BaseTool {
 		}
 
 		long id = Long.parseLong(args.get("id").toString());
-		Way w = (Way) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.WAY));
+		Relation r = (Relation) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.RELATION));
 
-		return JosmUtils.printElement(w);
+		return JosmUtils.printElement(r);
 	}
 }

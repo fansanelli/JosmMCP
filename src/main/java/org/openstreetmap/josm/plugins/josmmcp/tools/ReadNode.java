@@ -25,10 +25,9 @@ import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.data.osm.OsmPrimitiveType;
 import org.openstreetmap.josm.data.osm.SimplePrimitiveId;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.josmmcp.utils.JosmUtils;
 
-import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
 public class ReadNode extends BaseTool {
@@ -55,9 +54,7 @@ public class ReadNode extends BaseTool {
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
-		Map<String, Object> args = params.arguments();
-
+	public String handle(Map<String, Object> args) throws Exception {
 		DataSet ds = MainApplication.getLayerManager().getEditDataSet();
 		if (ds == null) {
 			throw new Exception("no active dataset found");
@@ -66,11 +63,6 @@ public class ReadNode extends BaseTool {
 		long id = Long.parseLong(args.get("id").toString());
 		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
 
-		String result = "";
-
-		result += nd.getCoor().toString();
-		result += nd.getKeys().toString();
-
-		return result;
+		return JosmUtils.printElement(nd);
 	}
 }

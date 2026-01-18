@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.Map;
 
 import org.openstreetmap.josm.tools.Logging;
 
@@ -37,7 +38,8 @@ public abstract class BaseTool implements org.openstreetmap.josm.plugins.josmmcp
 				tool, (exchange, params) -> {
 					Logging.info(String.format("Tool '%s' called with params: %s", this.getName(), params.arguments()));
 					try {
-						String result = this.handle(exchange, params);
+						Map<String, Object> args = params.arguments();
+						String result = this.handle(args);
 						Logging.info(String.format("Returning '%s' result: %s", this.getName(), result));
 						return Mono.just(CallToolResult.builder().content(Arrays.asList(new TextContent(result)))
 								.isError(false).build());

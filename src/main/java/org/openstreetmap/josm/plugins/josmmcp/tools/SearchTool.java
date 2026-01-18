@@ -23,14 +23,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.openstreetmap.josm.data.osm.DataSet;
-import org.openstreetmap.josm.data.osm.DefaultNameFormatter;
 import org.openstreetmap.josm.data.osm.OsmPrimitive;
 import org.openstreetmap.josm.data.osm.search.SearchCompiler;
 import org.openstreetmap.josm.gui.MainApplication;
+import org.openstreetmap.josm.plugins.josmmcp.utils.JosmUtils;
 
-import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
 public class SearchTool extends BaseTool {
@@ -60,9 +58,7 @@ public class SearchTool extends BaseTool {
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
-		Map<String, Object> args = params.arguments();
-
+	public String handle(Map<String, Object> args) throws Exception {
 		String query = (String) args.get("query");
 		Integer maxResults = (Integer) args.get("max_results");
 		if (maxResults == null) {
@@ -84,23 +80,16 @@ public class SearchTool extends BaseTool {
 			}
 		}
 
-		StringBuilder sb = new StringBuilder("Risultati ricerca per '").append(query).append("': ")
+		StringBuilder sb = new StringBuilder("Search results for query '").append(query).append("': ")
 				.append(results.size());
 		if (results.size() > maxResults) {
-			sb.append(" (mostrati primi ").append(maxResults).append(")");
+			sb.append(" (Showing first ").append(maxResults).append(")");
 		}
 		sb.append("\n");
 
-		int count = 0;
-		for (OsmPrimitive prim : results) {
-			if (count >= maxResults)
-				break;
-			sb.append("- ").append(prim.getDisplayName(new DefaultNameFormatter())).append(" (ID: ")
-					.append(prim.getId()).append(", tipo: ").append(prim.getType()).append(", tags: ")
-					.append(prim.getKeys()).append(")\n");
-			count++;
+		for (int count = 0, limit = Math.min(results.size(), maxResults); count < limit; count++) {
+			sb.append("\n-----------------\n").append(JosmUtils.printElement(results.get(count)));
 		}
-
 		return sb.toString();
 	}
 }

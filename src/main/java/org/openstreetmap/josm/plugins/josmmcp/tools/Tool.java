@@ -17,9 +17,9 @@
  */
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
-import io.modelcontextprotocol.common.McpTransportContext;
+import java.util.Map;
+
 import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 
 public interface Tool {
 	public String getName();
@@ -28,5 +28,5 @@ public interface Tool {
 
 	public McpSchema.JsonSchema getInputSchema();
 
-	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception;
+	public String handle(Map<String, Object> args) throws Exception;
 }

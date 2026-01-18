@@ -28,9 +28,12 @@ import org.openstreetmap.josm.plugins.PluginInformation;
 import org.openstreetmap.josm.plugins.josmmcp.tools.CreateNode;
 import org.openstreetmap.josm.plugins.josmmcp.tools.CreateWay;
 import org.openstreetmap.josm.plugins.josmmcp.tools.DeleteNode;
+import org.openstreetmap.josm.plugins.josmmcp.tools.DeleteRelation;
 import org.openstreetmap.josm.plugins.josmmcp.tools.DeleteWay;
+import org.openstreetmap.josm.plugins.josmmcp.tools.GetUserSelection;
 import org.openstreetmap.josm.plugins.josmmcp.tools.ModifyTags;
 import org.openstreetmap.josm.plugins.josmmcp.tools.ReadNode;
+import org.openstreetmap.josm.plugins.josmmcp.tools.ReadRelation;
 import org.openstreetmap.josm.plugins.josmmcp.tools.ReadWay;
 import org.openstreetmap.josm.plugins.josmmcp.tools.SearchTool;
 import org.openstreetmap.josm.plugins.josmmcp.tools.StateTool;
@@ -57,8 +60,10 @@ public class JosmMCPPlugin extends Plugin {
 
 			List<McpStatelessServerFeatures.AsyncToolSpecification> toolSpecs = new ArrayList<McpStatelessServerFeatures.AsyncToolSpecification>();
 			toolSpecs.add(new SearchTool().getSpec());
-			toolSpecs.add(new ModifyTags().getSpec());
 			toolSpecs.add(new StateTool().getSpec());
+			toolSpecs.add(new GetUserSelection().getSpec());
+
+			toolSpecs.add(new ModifyTags().getSpec());
 
 			// CRUD Operations on Nodes
 			toolSpecs.add(new CreateNode().getSpec());
@@ -71,6 +76,12 @@ public class JosmMCPPlugin extends Plugin {
 			toolSpecs.add(new ReadWay().getSpec());
 			//toolSpecs.add(new UpdateWay().getSpec());
 			toolSpecs.add(new DeleteWay().getSpec());
+			
+			// CRUD Operations on Relations
+			//toolSpecs.add(new CreateRelation().getSpec());
+			toolSpecs.add(new ReadRelation().getSpec());
+			//toolSpecs.add(new UpdateRelation().getSpec());
+			toolSpecs.add(new DeleteRelation().getSpec());
 
 			HttpServletStatelessServerTransport servlet = HttpServletStatelessServerTransport.builder().build();
 			McpStatelessAsyncServer server = McpServer.async(servlet).serverInfo("JOSM MCP Server", "1.0.0")

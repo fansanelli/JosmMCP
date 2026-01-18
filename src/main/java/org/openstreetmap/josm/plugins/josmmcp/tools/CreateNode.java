@@ -27,9 +27,7 @@ import org.openstreetmap.josm.data.osm.DataSet;
 import org.openstreetmap.josm.data.osm.Node;
 import org.openstreetmap.josm.gui.MainApplication;
 
-import io.modelcontextprotocol.common.McpTransportContext;
 import io.modelcontextprotocol.spec.McpSchema;
-import io.modelcontextprotocol.spec.McpSchema.CallToolRequest;
 import io.modelcontextprotocol.spec.McpSchema.JsonSchema;
 
 public class CreateNode extends BaseTool {
@@ -59,9 +57,7 @@ public class CreateNode extends BaseTool {
 	}
 
 	@Override
-	public String handle(McpTransportContext exchange, CallToolRequest params) throws Exception {
-		Map<String, Object> args = params.arguments();
-
+	public String handle(Map<String, Object> args) throws Exception {
 		DataSet ds = MainApplication.getLayerManager().getEditDataSet();
 		if (ds == null) {
 			throw new Exception("no active dataset found");
