@@ -4,7 +4,7 @@
 
   <groupId>org.openstreetmap.josm.plugins</groupId>
   <artifactId>josmmcp</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>josmmcp</name>
@@ -74,7 +74,7 @@
               <!-- The lowest JOSM version required by this plugin. -->
               <Plugin-Mainversion>18700</Plugin-Mainversion>
               <!-- The plugin version -->
-              <Plugin-Version>0.0.1-SNAPSHOT</Plugin-Version>
+              <Plugin-Version>0.0.2-SNAPSHOT</Plugin-Version>
               <!-- Points to the main class of the plugin -->
               <Plugin-Class>org.openstreetmap.josm.plugins.josmmcp.JosmMCPPlugin</Plugin-Class>
               <!-- Gives the description of the plugin visible in the preferences page -->

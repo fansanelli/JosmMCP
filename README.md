@@ -12,15 +12,10 @@ After installing and loading the plugin in JOSM, it automatically starts an MCP 
 
 Currently available tools:
 - `get_josm_state`: Retrieves the current state of JOSM, including version, downloaded layers, and data information.
+- `get_user_selection`: Retrieves information about the currently selected OSM elements in JOSM, including tags.
 - `search_elements`: Searches for OSM elements in the downloaded data using JOSM query syntax (e.g., 'highway=residential', 'amenity=restaurant').
 - `modify_tags`: Modifies OSM elements: add/remove/set tags.
-- `create_node`: Creates a new node
-- `read_node`: Returns coords and tags of a node
-- `update_node`: Moves a node
-- `delete_node`: Deletes a node
-- `create_way`: Creates a new way
-- `read_way`: Returns nodes and tags of a way
-- `delete_way`: Deletes a way
+- CRUD operations on Node, Ways, Relations (WIP)
 
 ## Building
 
@@ -39,7 +34,7 @@ The resulting jar with all dependencies will be in the `target` folder.
 Copy the generated jar from `target/` to your JOSM plugins directory, for example:
 
 ```sh
-cp target/josmmcp-0.0.1-SNAPSHOT-jar-with-dependencies.jar ~/.local/share/JOSM/plugins/
+cp target/josmmcp-0.0.2-SNAPSHOT-jar-with-dependencies.jar ~/.local/share/JOSM/plugins/
 ```
 
 ---
