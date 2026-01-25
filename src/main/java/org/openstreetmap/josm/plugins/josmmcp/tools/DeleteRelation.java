@@ -62,9 +62,9 @@ public class DeleteRelation extends BaseTool {
 		}
 
 		long id = Long.parseLong(args.get("id").toString());
-		Relation w = (Relation) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.RELATION));
+		Relation r = (Relation) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.RELATION));
 
-		DeleteCommand c = new DeleteCommand(ds, w);
+		DeleteCommand c = new DeleteCommand(ds, r);
 		UndoRedoHandler.getInstance().add(c);
 		return "";
 	}
