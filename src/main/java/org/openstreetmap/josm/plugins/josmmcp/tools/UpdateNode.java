@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.command.MoveCommand;
@@ -46,14 +47,14 @@ public class UpdateNode extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> editProps = new java.util.HashMap<>();
-		Map<String, Object> idProp = new java.util.HashMap<>();
+		Map<String, Object> editProps = new HashMap<>();
+		Map<String, Object> idProp = new HashMap<>();
 		idProp.put("type", "number");
 		editProps.put("id", idProp);
-		Map<String, Object> latProp = new java.util.HashMap<>();
+		Map<String, Object> latProp = new HashMap<>();
 		latProp.put("type", "number");
 		editProps.put("latitude", latProp);
-		Map<String, Object> lonProp = new java.util.HashMap<>();
+		Map<String, Object> lonProp = new HashMap<>();
 		lonProp.put("type", "number");
 		editProps.put("longitude", lonProp);
 		McpSchema.JsonSchema editSchema = new McpSchema.JsonSchema("object", editProps,

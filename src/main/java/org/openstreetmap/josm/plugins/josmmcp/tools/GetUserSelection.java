@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -43,7 +44,7 @@ public class GetUserSelection extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		McpSchema.JsonSchema emptySchema = new McpSchema.JsonSchema("object", new java.util.HashMap<>(), null, null,
+		McpSchema.JsonSchema emptySchema = new McpSchema.JsonSchema("object", new HashMap<>(), null, null,
 				null, null);
 		return emptySchema;
 	}

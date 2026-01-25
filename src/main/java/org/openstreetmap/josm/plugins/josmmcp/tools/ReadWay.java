@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.data.osm.DataSet;
@@ -44,8 +45,8 @@ public class ReadWay extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> readProps = new java.util.HashMap<>();
-		Map<String, Object> idProp = new java.util.HashMap<>();
+		Map<String, Object> readProps = new HashMap<>();
+		Map<String, Object> idProp = new HashMap<>();
 		idProp.put("type", "number");
 		readProps.put("id", idProp);
 		McpSchema.JsonSchema readSchema = new McpSchema.JsonSchema("object", readProps, Arrays.asList("id"), null, null,
@@ -62,6 +63,9 @@ public class ReadWay extends BaseTool {
 
 		long id = Long.parseLong(args.get("id").toString());
 		Way w = (Way) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.WAY));
+		if (w == null) {
+			throw new Exception("Way with id " + id + " not found");
+		}
 
 		return JosmUtils.printElement(w);
 	}

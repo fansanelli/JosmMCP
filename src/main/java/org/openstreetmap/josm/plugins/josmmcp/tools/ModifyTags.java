@@ -20,6 +20,7 @@ package org.openstreetmap.josm.plugins.josmmcp.tools;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
@@ -50,16 +51,16 @@ public class ModifyTags extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> modifyProps = new java.util.HashMap<>();
-		Map<String, Object> elTypeProp = new java.util.HashMap<>();
+		Map<String, Object> modifyProps = new HashMap<>();
+		Map<String, Object> elTypeProp = new HashMap<>();
 		elTypeProp.put("type", "string");
 		elTypeProp.put("enum", new ArrayList<String>(Arrays.asList("node", "way", "relation")));
 		modifyProps.put("element_type", elTypeProp);
-		Map<String, Object> elementIdProp = new java.util.HashMap<>();
+		Map<String, Object> elementIdProp = new HashMap<>();
 		elementIdProp.put("type", "number");
 		modifyProps.put("element_id", elementIdProp);
 
-		Map<String, Object> tagsProp = new java.util.HashMap<>();
+		Map<String, Object> tagsProp = new HashMap<>();
 		tagsProp.put("type", "object"); // Definisci 'tags' come oggetto
 		tagsProp.put("additionalProperties", Map.of("type", "string", // Ogni valore deve essere una stringa
 				"maxLength", 255 // Lunghezza massima per il valore
@@ -80,16 +81,23 @@ public class ModifyTags extends BaseTool {
 		String type = (String) args.get("element_type");
 		long id = Long.parseLong(args.get("element_id").toString());
 		OsmPrimitive el = ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.from(type)));
+		if (el == null) {
+			throw new Exception(type + " with id " + id + " not found");
+		}
 
 		Collection<Command> cmds = new LinkedList<>();
-		@SuppressWarnings("unchecked")
-		Map<String, String> tags = (java.util.HashMap<String, String>) args.get("tags");
-		if (tags != null) {
+		Object tagsObj = args.get("tags");
+		if (tagsObj != null) {
+			if (!(tagsObj instanceof Map)) {
+				throw new Exception("tags must be a map/object");
+			}
+			@SuppressWarnings("unchecked")
+			Map<String, Object> tagsMap = (Map<String, Object>) tagsObj;
 
-			java.util.Iterator<Map.Entry<String, String>> iterator = tags.entrySet().iterator();
-			while (iterator.hasNext()) {
-				Map.Entry<String, String> entry = iterator.next();
-				cmds.add(new ChangePropertyCommand(el, entry.getKey(), entry.getValue()));
+			for (Map.Entry<String, Object> entry : tagsMap.entrySet()) {
+				String key = entry.getKey();
+				String value = entry.getValue() == null ? "" : entry.getValue().toString();
+				cmds.add(new ChangePropertyCommand(el, key, value));
 			}
 		}
 

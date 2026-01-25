@@ -17,6 +17,7 @@
  */
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -43,7 +44,7 @@ public class StateTool extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		McpSchema.JsonSchema emptySchema = new McpSchema.JsonSchema("object", new java.util.HashMap<>(), null, null,
+		McpSchema.JsonSchema emptySchema = new McpSchema.JsonSchema("object", new HashMap<>(), null, null,
 				null, null);
 		return emptySchema;
 	}

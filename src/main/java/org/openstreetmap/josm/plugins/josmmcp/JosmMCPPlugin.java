@@ -58,7 +58,7 @@ public class JosmMCPPlugin extends Plugin {
 			context.setContextPath("/");
 			jettyServer.setHandler(context);
 
-			List<McpStatelessServerFeatures.AsyncToolSpecification> toolSpecs = new ArrayList<McpStatelessServerFeatures.AsyncToolSpecification>();
+			List<McpStatelessServerFeatures.AsyncToolSpecification> toolSpecs = new ArrayList<>();
 			toolSpecs.add(new SearchTool().getSpec());
 			toolSpecs.add(new StateTool().getSpec());
 			toolSpecs.add(new GetUserSelection().getSpec());
@@ -76,7 +76,7 @@ public class JosmMCPPlugin extends Plugin {
 			toolSpecs.add(new ReadWay().getSpec());
 			//toolSpecs.add(new UpdateWay().getSpec());
 			toolSpecs.add(new DeleteWay().getSpec());
-			
+
 			// CRUD Operations on Relations
 			//toolSpecs.add(new CreateRelation().getSpec());
 			toolSpecs.add(new ReadRelation().getSpec());
@@ -92,5 +92,18 @@ public class JosmMCPPlugin extends Plugin {
 		} catch (Exception e) {
 			Logging.error("Failed to start MCP server: " + e.getMessage(), e);
 		}
+	}
+
+	@Override
+	protected void finalize() throws Throwable {
+		if (jettyServer != null && jettyServer.isRunning()) {
+			try {
+				jettyServer.stop();
+				Logging.info("MCP HTTP server stopped");
+			} catch (Exception e) {
+				Logging.error("Failed to stop MCP server: " + e.getMessage(), e);
+			}
+		}
+		super.finalize();
 	}
 }

@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.command.DeleteCommand;
@@ -45,8 +46,8 @@ public class DeleteNode extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> deleteProps = new java.util.HashMap<>();
-		Map<String, Object> idProp = new java.util.HashMap<>();
+		Map<String, Object> deleteProps = new HashMap<>();
+		Map<String, Object> idProp = new HashMap<>();
 		idProp.put("type", "number");
 		deleteProps.put("id", idProp);
 		McpSchema.JsonSchema deleteSchema = new McpSchema.JsonSchema("object", deleteProps, Arrays.asList("id"), null, null,
@@ -63,6 +64,9 @@ public class DeleteNode extends BaseTool {
 
 		long id = Long.parseLong(args.get("id").toString());
 		Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+		if (nd == null) {
+			throw new Exception("Node with id " + id + " not found");
+		}
 
 		DeleteCommand c = new DeleteCommand(ds, nd);
 		UndoRedoHandler.getInstance().add(c);

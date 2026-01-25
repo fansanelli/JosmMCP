@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -48,8 +49,8 @@ public class CreateWay extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> createProps = new java.util.HashMap<>();
-		Map<String, Object> nodesProp = new java.util.HashMap<>();
+		Map<String, Object> createProps = new HashMap<>();
+		Map<String, Object> nodesProp = new HashMap<>();
 		nodesProp.put("type", "array");
 		nodesProp.put("items", Map.of("type", "number"));
 		createProps.put("node_ids", nodesProp);

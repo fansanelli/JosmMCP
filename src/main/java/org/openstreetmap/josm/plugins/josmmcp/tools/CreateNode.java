@@ -18,6 +18,7 @@
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.openstreetmap.josm.command.AddCommand;
@@ -44,11 +45,11 @@ public class CreateNode extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> createProps = new java.util.HashMap<>();
-		Map<String, Object> latProp = new java.util.HashMap<>();
+		Map<String, Object> createProps = new HashMap<>();
+		Map<String, Object> latProp = new HashMap<>();
 		latProp.put("type", "number");
 		createProps.put("latitude", latProp);
-		Map<String, Object> lonProp = new java.util.HashMap<>();
+		Map<String, Object> lonProp = new HashMap<>();
 		lonProp.put("type", "number");
 		createProps.put("longitude", lonProp);
 		McpSchema.JsonSchema createSchema = new McpSchema.JsonSchema("object", createProps,

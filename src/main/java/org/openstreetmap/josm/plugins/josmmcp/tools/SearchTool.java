@@ -17,8 +17,10 @@
  */
 package org.openstreetmap.josm.plugins.josmmcp.tools;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,8 +47,8 @@ public class SearchTool extends BaseTool {
 
 	@Override
 	public JsonSchema getInputSchema() {
-		Map<String, Object> searchProps = new java.util.HashMap<>();
-		Map<String, Object> queryProp = new java.util.HashMap<>();
+		Map<String, Object> searchProps = new HashMap<>();
+		Map<String, Object> queryProp = new HashMap<>();
 		queryProp.put("type", "string");
 		searchProps.put("query", queryProp);
 		Map<String, Object> maxResultsProp = new java.util.HashMap<>();
@@ -72,7 +74,7 @@ public class SearchTool extends BaseTool {
 
 		SearchCompiler.Match matcher = SearchCompiler.compile(query);
 		Collection<OsmPrimitive> allPrimitives = ds.allPrimitives();
-		List<OsmPrimitive> results = new java.util.ArrayList<>();
+		List<OsmPrimitive> results = new ArrayList<>();
 
 		for (OsmPrimitive prim : allPrimitives) {
 			if (matcher.match(prim)) {
