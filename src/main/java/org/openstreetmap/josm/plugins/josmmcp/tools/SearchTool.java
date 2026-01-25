@@ -42,7 +42,7 @@ public class SearchTool extends BaseTool {
 
 	@Override
 	public String getDescription() {
-		return "Cerca elementi OSM nei dati scaricati usando query JOSM";
+		return "Search for OSM elements in downloaded data using JOSM query syntax";
 	}
 
 	@Override
@@ -51,7 +51,7 @@ public class SearchTool extends BaseTool {
 		Map<String, Object> queryProp = new HashMap<>();
 		queryProp.put("type", "string");
 		searchProps.put("query", queryProp);
-		Map<String, Object> maxResultsProp = new java.util.HashMap<>();
+		Map<String, Object> maxResultsProp = new HashMap<>();
 		maxResultsProp.put("type", "integer");
 		searchProps.put("max_results", maxResultsProp);
 		McpSchema.JsonSchema searchSchema = new McpSchema.JsonSchema("object", searchProps, Arrays.asList("query"),

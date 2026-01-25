@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.openstreetmap.josm.command.AddCommand;
 import org.openstreetmap.josm.data.UndoRedoHandler;
@@ -68,10 +67,13 @@ public class CreateWay extends BaseTool {
 
 		@SuppressWarnings("unchecked")
 		List<Long> nodes = ((List<Object>) args.get("node_ids")).stream().map(obj -> Long.parseLong(obj.toString()))
-				.collect(Collectors.toList());
+				.toList();
 		Way w = new Way();
 		for (long id : nodes) {
 			Node nd = (Node) ds.getPrimitiveById(new SimplePrimitiveId(id, OsmPrimitiveType.NODE));
+			if (nd == null) {
+				throw new Exception("Node with id " + id + " not found");
+			}
 			w.addNode(nd);
 		}
 
